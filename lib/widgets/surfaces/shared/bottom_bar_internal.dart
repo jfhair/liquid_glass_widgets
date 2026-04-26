@@ -201,7 +201,7 @@ class BottomBarTabItem extends StatelessWidget {
                           color: iconColor,
                           fontSize: labelFontSize,
                           fontWeight:
-                              selected ? FontWeight.w600 : FontWeight.w500,
+                              selected ? FontWeight.w700 : FontWeight.w600,
                         ),
                   ),
               ],
@@ -537,7 +537,7 @@ class TabIndicatorState extends State<TabIndicator>
             isBackgroundIndicator: false,
             borderRadius: thickness < 1 ? backgroundRadius : glassRadius,
             padding: const EdgeInsets.all(4),
-            expansion: 14,
+            expansion: 5,
             glassSettings: widget.indicatorSettings,
             backgroundKey: widget.backgroundKey,
           )
@@ -598,7 +598,7 @@ class TabIndicatorState extends State<TabIndicator>
                 itemCount: widget.tabCount,
                 alignment: alignment,
                 thickness: thickness,
-                expansion: 14,
+                expansion: 5,
                 transform: jellyTransform,
                 borderRadius:
                     thickness < 1 ? backgroundRadius : glassRadius,
@@ -616,7 +616,7 @@ class TabIndicatorState extends State<TabIndicator>
                 itemCount: widget.tabCount,
                 alignment: alignment,
                 thickness: thickness,
-                expansion: 14,
+                expansion: 5,
                 transform: jellyTransform,
                 borderRadius:
                     thickness < 1 ? backgroundRadius : glassRadius,
@@ -642,7 +642,7 @@ class TabIndicatorState extends State<TabIndicator>
       isBackgroundIndicator: false,
       borderRadius: thickness < 1 ? backgroundRadius : glassRadius,
       padding: const EdgeInsets.all(4),
-      expansion: 14,
+      expansion: 5,
       glassSettings: widget.indicatorSettings,
       backgroundKey: widget.backgroundKey,
     );
