@@ -706,13 +706,14 @@ class SearchPillState extends State<SearchPill> {
             children: [
               GlassButton(
                 key: const ValueKey('pill-collapsed'),
-                // Local Hero Dirt override: swapped from
-                // CupertinoIcons.search (slim, default size 24) to
-                // Material's rounded magnifier at size 31 — chunkier
-                // weight matches App Store / Apple Music's search
-                // pill better against the surrounding tab icons.
-                // See FORK_CHANGES.md for context.
-                icon: Icon(Icons.search_rounded, color: iconColor, size: 31),
+                // Local Hero Dirt override: same CupertinoIcons.search
+                // glyph (which matches iOS's magnifyingglass shape
+                // closest of any icon we tried), just at size 30 to
+                // be proportional with Hero Dirt's tab icons.
+                // cupertino_icons isn't a variable font, so we can't
+                // also bump the weight here — see FORK_CHANGES.md
+                // for the upstream discussion plan.
+                icon: Icon(CupertinoIcons.search, color: iconColor, size: 30),
                 // No-op while mid-animation to avoid double-toggling, EXCEPT
                 // if expandWhenActive is false, which means this is a persistent
                 // collapsed search button that needs to be tappable to activate search.

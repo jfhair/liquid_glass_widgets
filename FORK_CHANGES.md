@@ -89,25 +89,38 @@ grep -rn "indicatorExpansion" lib/widgets/surfaces/
 
 ---
 
-## Local change — search-pill icon
+## Local change — search-pill icon size
 
 **Why:** the upstream collapsed search pill renders
-`Icon(CupertinoIcons.search, color: iconColor)` — a slim glyph at
-default size ~24. In our app it visually reads as thin/small relative
-to the surrounding tab icons (sized 30 in our config). Swapped to
-`Icons.search_rounded` at size 31 — chunkier weight that matches
-App Store / Apple Music's search-button visual better.
+`Icon(CupertinoIcons.search, color: iconColor)` at default size ~24,
+which reads as small relative to surrounding tab icons sized 30 in
+Hero Dirt's config. Bumped to size 30 — proportional with the rest
+of the bar without changing the glyph itself.
 
 **Affected line (1 spot):**
 - `lib/widgets/surfaces/shared/searchable_bottom_bar_internal.dart`
   — inside the `GlassButton` for the collapsed pill (around line 709).
+  Just adds `size: 30` to the existing `Icon(CupertinoIcons.search,
+  ...)` literal.
 
-**Status:** local override only. A respectful upstream discussion has
-been opened asking about (a) the rationale for the current icon
-choice, and (b) whether `searchIcon: Widget?` would be acceptable as
-a caller-override on `GlassSearchBarConfig`. If the discussion
-results in a configurability change upstream, this local patch can
-be replaced with passing the icon via the public API.
+**Why not also bump the weight:** `cupertino_icons` is a static
+(non-variable) font — `Icon(...)`'s `weight` parameter is silently
+ignored on it, and the glyph it ships is closer to SF Pro
+magnifyingglass at the Light/Regular weight rather than the heavier
+Medium/Semibold that App Store and Apple Music actually use.
+
+To match the real iOS magnifyingglass weight we'd need either
+(a) `flutter_sficon` for actual SF Symbols (variable weight, exact
+shape match) or (b) `material_symbols_icons` for Material 3's
+variable-font search icon. Both are heavier deps than just bumping
+the size — deferring that decision until after the upstream
+discussion concludes.
+
+**Discussion status:** opening a discussion upstream asking about
+the design intent and proposing SF Symbols (via something like
+`flutter_sficon`) as the "actual right" default for an iOS
+Liquid Glass design package. Result will inform whether this local
+override stays as-is or gets replaced with a heavier-glyph approach.
 
 ---
 
