@@ -89,38 +89,48 @@ grep -rn "indicatorExpansion" lib/widgets/surfaces/
 
 ---
 
-## Local change — search-pill icon size
+## Change #2 — `searchIcon` override on `GlassSearchBarConfig`
+(PR-shaped, additive — see below)
 
-**Why:** the upstream collapsed search pill renders
-`Icon(CupertinoIcons.search, color: iconColor)` at default size ~24,
-which reads as small relative to surrounding tab icons sized 30 in
-Hero Dirt's config. Bumped to size 30 — proportional with the rest
-of the bar without changing the glyph itself.
+**Why:** the upstream collapsed search pill hardcodes
+`Icon(CupertinoIcons.search, color: iconColor)`. `cupertino_icons`
+is an aging static font whose `search` glyph doesn't match SF Pro's
+`magnifyingglass`: thinner stroke, handle/circle disconnect, smaller
+circle proportionally. For a package that explicitly mimics iOS 26
+Liquid Glass design, the search-pill icon should match what real
+iOS renders.
 
-**Affected line (1 spot):**
+Because this is a stylistic-default question more than a clear bug,
+the cleanest path is to **expose the icon as caller-overridable**
+rather than picking one "best" default and arguing for it. Apps that
+care about exact iOS fidelity can pass `Icon(SFSymbol.magnifyingglass,
+...)` from `flutter_sficon`; apps wanting just a heavier weight can
+pass `Icon(Symbols.search, weight: 500, ...)` from
+`material_symbols_icons`; apps fine with the current default just
+don't pass anything.
+
+Hero Dirt currently passes a Material Symbols search icon via this
+override (see `ios_shell.dart`).
+
+**Approach (the upstream-PR shape):** added `searchIcon: Widget?`
+field on `GlassSearchBarConfig` (default `null`). When `null`, the
+existing `Icon(CupertinoIcons.search, color: iconColor)` literal is
+used — zero behavior change for any existing caller. When non-null,
+the supplied widget is used in place of the default.
+
+**Affected files:**
+- `lib/widgets/surfaces/shared/glass_search_bar_config.dart` —
+  added `final Widget? searchIcon;` + ctor param + dartdoc
 - `lib/widgets/surfaces/shared/searchable_bottom_bar_internal.dart`
-  — inside the `GlassButton` for the collapsed pill (around line 709).
-  Just adds `size: 30` to the existing `Icon(CupertinoIcons.search,
-  ...)` literal.
+  — call site now reads
+  `widget.config.searchIcon ?? Icon(CupertinoIcons.search, color: iconColor)`
 
-**Why not also bump the weight:** `cupertino_icons` is a static
-(non-variable) font — `Icon(...)`'s `weight` parameter is silently
-ignored on it, and the glyph it ships is closer to SF Pro
-magnifyingglass at the Light/Regular weight rather than the heavier
-Medium/Semibold that App Store and Apple Music actually use.
-
-To match the real iOS magnifyingglass weight we'd need either
-(a) `flutter_sficon` for actual SF Symbols (variable weight, exact
-shape match) or (b) `material_symbols_icons` for Material 3's
-variable-font search icon. Both are heavier deps than just bumping
-the size — deferring that decision until after the upstream
-discussion concludes.
-
-**Discussion status:** opening a discussion upstream asking about
-the design intent and proposing SF Symbols (via something like
-`flutter_sficon`) as the "actual right" default for an iOS
-Liquid Glass design package. Result will inform whether this local
-override stays as-is or gets replaced with a heavier-glyph approach.
+**Discussion status:** open a discussion upstream proposing either
+(a) replacing the hardcoded default with a real SF Symbol via
+`flutter_sficon` for closer iOS fidelity, OR (b) accepting this PR
+to expose `searchIcon` as a caller override. Either solves the
+problem; (b) is more flexible and respects different apps' icon-set
+preferences.
 
 ---
 
