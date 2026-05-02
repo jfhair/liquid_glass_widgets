@@ -1,10 +1,17 @@
-# Hero Dirt fork — local modification
+# Hero Dirt fork — local modifications
 
-This fork carries one local-only change on top of upstream
+This fork carries two local changes on top of upstream
 [`sdegenaar/liquid_glass_widgets`](https://github.com/sdegenaar/liquid_glass_widgets)
 `v0.9.6`. Used by the Hero Dirt app via a `dependency_overrides: git:` entry
 in `hero_dirt/pubspec.yaml` that pins to the `hero-dirt-expansion-only`
 branch.
+
+1. **`indicatorExpansion` parameter** (PR-shaped, additive — see below)
+2. **Search-pill icon swap** (local-only — `CupertinoIcons.search` →
+   `Icons.search_rounded` size 31). A respectful upstream discussion
+   has been opened to ask about the icon choice and possibly expose
+   it as a caller-overridable param. If/when that lands, this local
+   patch goes away.
 
 ## Branches
 
@@ -80,19 +87,39 @@ grep -rn "indicatorExpansion" lib/widgets/surfaces/
 
 ---
 
+---
+
+## Local change — search-pill icon
+
+**Why:** the upstream collapsed search pill renders
+`Icon(CupertinoIcons.search, color: iconColor)` — a slim glyph at
+default size ~24. In our app it visually reads as thin/small relative
+to the surrounding tab icons (sized 30 in our config). Swapped to
+`Icons.search_rounded` at size 31 — chunkier weight that matches
+App Store / Apple Music's search-button visual better.
+
+**Affected line (1 spot):**
+- `lib/widgets/surfaces/shared/searchable_bottom_bar_internal.dart`
+  — inside the `GlassButton` for the collapsed pill (around line 709).
+
+**Status:** local override only. A respectful upstream discussion has
+been opened asking about (a) the rationale for the current icon
+choice, and (b) whether `searchIcon: Widget?` would be acceptable as
+a caller-override on `GlassSearchBarConfig`. If the discussion
+results in a configurability change upstream, this local patch can
+be replaced with passing the icon via the public API.
+
+---
+
 ## Changes that were rolled back
 
-Three local tweaks from the previous `hero-dirt-local` branch were
+Two local tweaks from the previous `hero-dirt-local` branch were
 considered but not carried forward:
 
-1. **Search-pill icon** (`Icons.search_rounded` size 31, was
-   `CupertinoIcons.search` size 24) — opening a respectful upstream
-   discussion to ask about the icon choice rather than maintaining
-   our own override.
-2. **Tab label weights** (`w700/w600` selected/unselected, was
+1. **Tab label weights** (`w700/w600` selected/unselected, was
    `w600/w500`) — minor enough that the upstream defaults are
    acceptable.
-3. **Indicator-behind-icons** — landed upstream in `v0.9.3` as our
+2. **Indicator-behind-icons** — landed upstream in `v0.9.3` as our
    PR #29. Now the default behavior, no opt-in needed.
 
 ---
