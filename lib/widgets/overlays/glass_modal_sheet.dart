@@ -174,6 +174,12 @@ class GlassModalSheet extends StatefulWidget {
   /// Custom color for the drag handle.
   final Color? dragIndicatorColor;
 
+  /// Width of the drag handle pill in logical pixels. Defaults to 36
+  /// (iOS native). Bump higher (e.g. 64) for sheets where the handle
+  /// reads as the primary affordance and a thinner pill feels too
+  /// subtle relative to the rest of the sheet's content.
+  final double dragIndicatorWidth;
+
   /// Whether to enable a gradient fade effect at the top of the sheet.
   final bool enableTopFade;
 
@@ -219,6 +225,7 @@ class GlassModalSheet extends StatefulWidget {
     this.fillTransition = FillTransition.instant,
     this.showDragIndicator = true,
     this.dragIndicatorColor,
+    this.dragIndicatorWidth = 36,
     this.glowColor,
     this.glowRadius = 1.5,
     this.suppressInteractionOnChildren = false,
@@ -263,6 +270,7 @@ class GlassModalSheet extends StatefulWidget {
     FillTransition fillTransition = FillTransition.instant,
     bool showDragIndicator = true,
     Color? dragIndicatorColor,
+    double dragIndicatorWidth = 36,
     double? topBorderRadius = 56,
     double? bottomBorderRadius,
     double? fullTopBorderRadius = 46,
@@ -339,6 +347,7 @@ class GlassModalSheet extends StatefulWidget {
           fillTransition: fillTransition,
           showDragIndicator: showDragIndicator,
           dragIndicatorColor: dragIndicatorColor,
+          dragIndicatorWidth: dragIndicatorWidth,
           topBorderRadius: topBorderRadius,
           bottomBorderRadius: bottomBorderRadius,
           fullTopBorderRadius: fullTopBorderRadius,
